@@ -5,8 +5,10 @@ import com.example.casocitasmedicas.repository.CitaMedica;
 import com.example.casocitasmedicas.repository.CitaMedicaRepository;
 import com.example.casocitasmedicas.repository.Paciente;
 import com.example.casocitasmedicas.repository.PacienteRepository;
+import com.example.casocitasmedicas.util.CitaMedicaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,14 +16,18 @@ import java.util.Optional;
 
 @Service
 public class CitaMedicaService {
-    Logger log = LoggerFactory.getLogger(CitaMedica.class);
+    private static final Logger log = LoggerFactory.getLogger(CitaMedicaService.class);
 
     private final CitaMedicaRepository citaRepository;
     private final PacienteRepository pacienteRepository;
 
-    public CitaMedicaService(CitaMedicaRepository citaRepository, PacienteRepository pacienteRepository) {
+
+    private CitaMedicaMapper mapper;
+
+    public CitaMedicaService(CitaMedicaRepository citaRepository, PacienteRepository pacienteRepository, CitaMedicaMapper mapper) {
         this.citaRepository = citaRepository;
         this.pacienteRepository = pacienteRepository;
+        this.mapper = mapper;
     }
 
     // Listar citas
