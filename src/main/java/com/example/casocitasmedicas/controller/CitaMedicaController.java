@@ -45,15 +45,6 @@ public class CitaMedicaController {
         return citaService.buscarPorTipo(tipoCita);
     }
 
-    //guardar cita
-    /*@PostMapping
-    public ResponseEntity<CitaMedica> crear(@RequestBody CitaMedica cita) {
-        Paciente paciente = pacienteService.buscarCitaPorId(cita.getPaciente().getId())
-                .orElseGet(() -> pacienteService.guardar(cita.getPaciente()));
-        cita.setPaciente(paciente);
-        return ResponseEntity.ok(citaService.guardar(cita));
-    }*/
-
     //// PARA CREAR CITA
     // Crea uno
     @PostMapping
@@ -64,6 +55,22 @@ public class CitaMedicaController {
         return ResponseEntity.ok(citaService.saveCitation(citaMedica)).getBody();
     }
 
+    //// ACTUALIZAR UNA CITA
+    // Actualiza uno
+    @PutMapping("/citationupdate/{id}")
+    public CitaMedica UpdateCitation(@PathVariable Long id,
+                          @RequestBody CitaMedica citaMedica){
+        return this.citaService.UpdateOneCitation(id,citaMedica);
+    }
+
+    //// ELIMINAR UNA CITA
+    // Elimina unop
+    @DeleteMapping("/citationdelete/{id}")
+    public ResponseEntity<Void> deleteCitation(@PathVariable Long id) {
+        citaService.deleteOneCitation(id);
+        return ResponseEntity.noContent().build();
+    }
+
     //  DTO save
     @PostMapping("/dto")
     public ResponseEntity<CitaMedicaDTO> crearConDTO(@RequestBody CitaMedicaDTO dto) {
@@ -71,5 +78,5 @@ public class CitaMedicaController {
         return ResponseEntity.ok(saved);
     }
 
-    //eliminar cita
+
 }

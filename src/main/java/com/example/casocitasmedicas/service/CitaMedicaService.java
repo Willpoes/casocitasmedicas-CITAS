@@ -80,4 +80,24 @@ public class CitaMedicaService {
     }
 
     //
+    public CitaMedica UpdateOneCitation(Long id, CitaMedica citaMedica) {
+        CitaMedica citaMedicaFinded = citaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("cita medica no se encontro!" + id));
+        citaMedicaFinded.setHoraIngreso(citaMedica.getHoraIngreso());
+        citaMedicaFinded.setHoraSalida(citaMedica.getHoraSalida());
+        citaMedicaFinded.setMedico(citaMedica.getMedico());
+        citaMedicaFinded.setTipoCita(citaMedica.getTipoCita());
+        citaMedicaFinded.setCentroMedico(citaMedica.getCentroMedico());
+        citaMedicaFinded.setPaciente(citaMedica.getPaciente());
+
+        return this.citaRepository.save(citaMedicaFinded);
+    }
+
+    //// Eliminar CITA
+    // Eliminar una cita por id
+    public void deleteOneCitation(Long id) {
+        CitaMedica citaMedica = citaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cita meedica no encontrada con id " + id));
+        citaRepository.delete(citaMedica);
+    }
 }
