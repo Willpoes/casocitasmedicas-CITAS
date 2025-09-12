@@ -18,7 +18,7 @@ public class CasocitasmedicasApplication {
         SpringApplication.run(CasocitasmedicasApplication.class, args);
     }
 
-    @Bean
+    /*@Bean
     CommandLineRunner initDatabase(PacienteRepository pacienteRepository,
                                    CitaMedicaRepository citaRepository) {
         return args -> {
@@ -54,5 +54,5 @@ public class CasocitasmedicasApplication {
             c2.setPaciente(p2);
             citaRepository.save(c2);
         };
-    }
+    }*/
 }

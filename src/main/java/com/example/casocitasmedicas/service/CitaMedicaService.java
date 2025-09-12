@@ -34,20 +34,9 @@ public class CitaMedicaService {
         return citaRepository.findById(id);
     }
 
-    // buscar CITAS por tipo
-    /*public List<CitaMedica> buscarCitasPorTipos(String tipo) {
-        log.info("aqui estamos retornando citas/tipo en service");
-        return citaRepository.findByTipoCita(tipo);
-    }*/
-
     public List<CitaMedica> buscarPorTipo(String tipoCita) {
         return citaRepository.findByTipoCitaContainingIgnoreCase(tipoCita);
     }
-
-    //gaurdar citas
-    /*public CitaMedica guardar(CitaMedica cita) {
-        return citaRepository.save(cita);
-    }*/
 
     public CitaMedica saveCitation(CitaMedica citaMedica) {
         log.info("aqui estamos agregando por service");

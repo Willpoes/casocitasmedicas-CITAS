@@ -71,7 +71,7 @@ public class CitaMedicaController {
         return ResponseEntity.noContent().build();
     }
 
-    //  DTO save
+    ////probando dto  DTO save
     @PostMapping("/dto")
     public ResponseEntity<CitaMedicaDTO> crearConDTO(@RequestBody CitaMedicaDTO dto) {
         CitaMedicaDTO saved = citaService.guardarDesdeDTO(dto);
