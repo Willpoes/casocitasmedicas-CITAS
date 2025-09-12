@@ -22,29 +22,46 @@ public class CitaMedicaController {
         this.pacienteService = pacienteService;
     }
 
-    // Listar citas
+    //// LISTAR CITAS
+    // Lista todas las citas con service
     @GetMapping
     public List<CitaMedica> getAll() {
         return citaService.listarTodas();
     }
 
-    // buscar cita por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<CitaMedica> getById(@PathVariable Long id) {
-        return citaService.buscarPorId(id)
+    ////BUSCAR CITAS POR ID
+    // Lista solo una
+    @GetMapping("/citationid/{id}")
+    public ResponseEntity<CitaMedica> getOneCitationById(@PathVariable Long id) {
+        return citaService.buscarCitaPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    //buscar por tipos
+    ////BUSCAR CITAS POR TIPO DE CITA
+    // Lista varias
+    @GetMapping("/citationtype/{tipoCita}")
+    public List<CitaMedica> buscarPorTipo(@PathVariable String tipoCita) {
+        return citaService.buscarPorTipo(tipoCita);
+    }
 
     //guardar cita
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<CitaMedica> crear(@RequestBody CitaMedica cita) {
-        Paciente paciente = pacienteService.buscarPorId(cita.getPaciente().getId())
+        Paciente paciente = pacienteService.buscarCitaPorId(cita.getPaciente().getId())
                 .orElseGet(() -> pacienteService.guardar(cita.getPaciente()));
         cita.setPaciente(paciente);
         return ResponseEntity.ok(citaService.guardar(cita));
+    }*/
+
+    //// PARA CREAR CITA
+    // Crea uno
+    @PostMapping
+    public CitaMedica createNewCitation(@RequestBody CitaMedica citaMedica){
+        Paciente paciente = pacienteService.buscarCitaPorId(citaMedica.getPaciente().getId())
+                .orElseGet(() -> pacienteService.guardar(citaMedica.getPaciente()));
+        citaMedica.setPaciente(paciente);
+        return ResponseEntity.ok(citaService.saveCitation(citaMedica)).getBody();
     }
 
     //  DTO save

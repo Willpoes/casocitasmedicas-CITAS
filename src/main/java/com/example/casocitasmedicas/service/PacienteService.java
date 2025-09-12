@@ -14,7 +14,7 @@ public class PacienteService {
         this.pacienteRepository = pacienteRepository;
     }
 
-    public Optional<Paciente> buscarPorId(Long id) {
+    public Optional<Paciente> buscarCitaPorId(Long id) {
         return pacienteRepository.findById(id);
     }
 

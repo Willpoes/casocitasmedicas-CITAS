@@ -5,6 +5,8 @@ import com.example.casocitasmedicas.repository.CitaMedica;
 import com.example.casocitasmedicas.repository.CitaMedicaRepository;
 import com.example.casocitasmedicas.repository.Paciente;
 import com.example.casocitasmedicas.repository.PacienteRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.Optional;
 
 @Service
 public class CitaMedicaService {
+    Logger log = LoggerFactory.getLogger(CitaMedica.class);
+
     private final CitaMedicaRepository citaRepository;
     private final PacienteRepository pacienteRepository;
 
@@ -25,14 +29,29 @@ public class CitaMedicaService {
         return citaRepository.findAll();
     }
 
-    // buscar cita por Iid
-    public Optional<CitaMedica> buscarPorId(Long id) {
+    // buscar CITA por Iid
+    public Optional<CitaMedica> buscarCitaPorId(Long id) {
         return citaRepository.findById(id);
     }
 
+    // buscar CITAS por tipo
+    /*public List<CitaMedica> buscarCitasPorTipos(String tipo) {
+        log.info("aqui estamos retornando citas/tipo en service");
+        return citaRepository.findByTipoCita(tipo);
+    }*/
+
+    public List<CitaMedica> buscarPorTipo(String tipoCita) {
+        return citaRepository.findByTipoCitaContainingIgnoreCase(tipoCita);
+    }
+
     //gaurdar citas
-    public CitaMedica guardar(CitaMedica cita) {
+    /*public CitaMedica guardar(CitaMedica cita) {
         return citaRepository.save(cita);
+    }*/
+
+    public CitaMedica saveCitation(CitaMedica citaMedica) {
+        log.info("aqui estamos agregando por service");
+        return citaRepository.save(citaMedica);
     }
 
     //solo par ahora de inggreso, mientras guardar
