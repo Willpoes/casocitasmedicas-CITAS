@@ -60,4 +60,5 @@ public class CitaMedicaDTO {
     public void setPacienteId(Long pacienteId) {
         this.pacienteId = pacienteId;
     }
+
 }

@@ -1,17 +1,11 @@
 package com.example.casocitasmedicas;
 
-import com.example.casocitasmedicas.repository.CitaMedica;
-import com.example.casocitasmedicas.repository.CitaMedicaRepository;
-import com.example.casocitasmedicas.repository.Paciente;
-import com.example.casocitasmedicas.repository.PacienteRepository;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-
-import java.time.LocalDateTime;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
+@EnableFeignClients(basePackages = "com.example.casocitasmedicas.Client")
 public class CasocitasmedicasApplication {
 
     public static void main(String[] args) {

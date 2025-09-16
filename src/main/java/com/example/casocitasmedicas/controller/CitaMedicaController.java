@@ -1,11 +1,10 @@
 package com.example.casocitasmedicas.controller;
 
 import com.example.casocitasmedicas.dto.CitaMedicaDTO;
-import com.example.casocitasmedicas.exception.BadRequestException;
+import com.example.casocitasmedicas.dto.PacienteDTO;
 import com.example.casocitasmedicas.repository.CitaMedica;
-import com.example.casocitasmedicas.repository.Paciente;
 import com.example.casocitasmedicas.service.CitaMedicaService;
-import com.example.casocitasmedicas.service.PacienteService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,18 +15,22 @@ import java.util.List;
 public class CitaMedicaController {
 
     private final CitaMedicaService citaService;
-    private final PacienteService pacienteService;
 
-    public CitaMedicaController(CitaMedicaService citaService, PacienteService pacienteService) {
+    public CitaMedicaController(CitaMedicaService citaService) {
         this.citaService = citaService;
-        this.pacienteService = pacienteService;
     }
 
-    //// LISTAR CITAS
+
+    /// LISTAR CITAS
     // Lista todas las citas con service
     @GetMapping
     public List<CitaMedica> getAll() {
         return citaService.listarTodas();
+    }
+    @GetMapping("/paciente/{id}")
+    public ResponseEntity<PacienteDTO> obtenerPaciente(@PathVariable Long id) {
+        PacienteDTO paciente = citaService.obtenerPacienteDesdePacientes(id);
+        return ResponseEntity.ok(paciente);
     }
 
     ////BUSCAR CITAS POR ID
@@ -48,22 +51,16 @@ public class CitaMedicaController {
 
     //// PARA CREAR CITA
     // Crea uno
-    @PostMapping
-    public CitaMedica createNewCitation(@RequestBody CitaMedica citaMedica){
-        Paciente paciente = pacienteService.buscarCitaPorId(citaMedica.getPaciente().getId())
-                .orElseGet(() -> pacienteService.guardar(citaMedica.getPaciente()));
-        citaMedica.setPaciente(paciente);
-        return ResponseEntity.ok(citaService.saveCitation(citaMedica)).getBody();
-    }
-
-    //// ACTUALIZAR UNA CITA
-    // Actualiza uno
-    @PutMapping("/citationupdate/{id}")
-    public CitaMedica UpdateCitation(@PathVariable Long id,
-                          @RequestBody CitaMedica citaMedica){
-        return this.citaService.UpdateOneCitation(id,citaMedica);
-    }
-
+    // Crear una nueva cita
+//
+//    //// ACTUALIZAR UNA CITA
+//    // Actualiza uno
+//    @PutMapping("/citationupdate/{id}")
+//    public CitaMedica UpdateCitation(@PathVariable Long id,
+//                          @RequestBody CitaMedica citaMedica){
+//        return this.citaService.UpdateOneCitation(id,citaMedica);
+//    }
+//
     //// ELIMINAR UNA CITA
     // Elimina unop
     @DeleteMapping("/citationdelete/{id}")
@@ -82,18 +79,18 @@ public class CitaMedicaController {
     // pacienteId: null -> error 11/09 error solo con paciente id
 
 
-    @PostMapping("/dto/citation")
-    public ResponseEntity<CitaMedicaDTO> crearConDTO(@RequestBody CitaMedicaDTO dto) {
-        if (dto.getTipoCita() == null || dto.getTipoCita().isEmpty()) {
-            throw new BadRequestException("El tipo no puede estar vacío");
-        }
-        if (dto.getHoraIngreso() == null) {
-            throw new BadRequestException("Debe existir hora de ingreso");
-        }
-
-        CitaMedicaDTO saved = citaService.guardarDesdeDTO(dto);
-        return ResponseEntity.ok(saved);
-    }
+//    @PostMapping("/dto/citation")
+//    public ResponseEntity<CitaMedicaDTO> crearConDTO(@RequestBody CitaMedicaDTO dto) {
+//        if (dto.getTipoCita() == null || dto.getTipoCita().isEmpty()) {
+//            throw new BadRequestException("El tipo no puede estar vacío");
+//        }
+//        if (dto.getHoraIngreso() == null) {
+//            throw new BadRequestException("Debe existir hora de ingreso");
+//        }
+//
+//        CitaMedicaDTO saved = citaService.guardarDesdeDTO(dto);
+//        return ResponseEntity.ok(saved);
+//    }
 
 
 }

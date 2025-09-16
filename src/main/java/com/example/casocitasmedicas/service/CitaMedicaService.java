@@ -1,14 +1,13 @@
 package com.example.casocitasmedicas.service;
 
+import com.example.casocitasmedicas.Client.PacienteClient;
 import com.example.casocitasmedicas.dto.CitaMedicaDTO;
+import com.example.casocitasmedicas.dto.PacienteDTO;
 import com.example.casocitasmedicas.repository.CitaMedica;
 import com.example.casocitasmedicas.repository.CitaMedicaRepository;
-import com.example.casocitasmedicas.repository.Paciente;
-import com.example.casocitasmedicas.repository.PacienteRepository;
 import com.example.casocitasmedicas.util.CitaMedicaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,20 +18,25 @@ public class CitaMedicaService {
     private static final Logger log = LoggerFactory.getLogger(CitaMedicaService.class);
 
     private final CitaMedicaRepository citaRepository;
-    private final PacienteRepository pacienteRepository;
-
+    private final PacienteClient pacienteClient;
 
     private CitaMedicaMapper mapper;
 
-    public CitaMedicaService(CitaMedicaRepository citaRepository, PacienteRepository pacienteRepository, CitaMedicaMapper mapper) {
+    public CitaMedicaService(CitaMedicaRepository citaRepository,
+                             PacienteClient pacienteClient,
+                             CitaMedicaMapper mapper) {
         this.citaRepository = citaRepository;
-        this.pacienteRepository = pacienteRepository;
+        this.pacienteClient = pacienteClient;
         this.mapper = mapper;
     }
+
 
     // Listar citas
     public List<CitaMedica> listarTodas() {
         return citaRepository.findAll();
+    }
+    public PacienteDTO obtenerPacienteDesdePacientes(Long id) {
+        return pacienteClient.obtenerPaciente(id);
     }
 
     // buscar CITA por Iid
@@ -49,44 +53,39 @@ public class CitaMedicaService {
         return citaRepository.save(citaMedica);
     }
 
-    //solo par ahora de inggreso, mientras guardar
+
+    // Crear una cita desde el DTO
     public CitaMedicaDTO guardarDesdeDTO(CitaMedicaDTO dto) {
-        Paciente paciente = pacienteRepository.findById(dto.getPacienteId())
-                .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+        // 1. Verificar si el paciente existe en el microservicio Pacientes
+        PacienteDTO paciente = pacienteClient.obtenerPaciente(dto.getPacienteId());
+        if (paciente == null) {
+            throw new RuntimeException("Paciente no encontrado en microservicio Pacientes");
+        }
 
-        CitaMedica cita = new CitaMedica();
-        cita.setHoraIngreso(dto.getHoraIngreso());
-        cita.setHoraSalida(dto.getHoraSalida());
-        cita.setMedico(dto.getMedico());
-        cita.setTipoCita(dto.getTipoCita());
-        cita.setCentroMedico(dto.getCentroMedico());
-        cita.setPaciente(paciente);
+        // 2. Convertir el DTO a entidad
+        CitaMedica cita = mapper.toEntity(dto);
 
+        // 3. Guardar la cita en la BD local (microservicio citas)
         CitaMedica saved = citaRepository.save(cita);
 
-        CitaMedicaDTO response = new CitaMedicaDTO();
-        response.setHoraIngreso(saved.getHoraIngreso());
-        response.setHoraSalida(saved.getHoraSalida());
-        response.setMedico(saved.getMedico());
-        response.setTipoCita(saved.getTipoCita());
-        response.setCentroMedico(saved.getCentroMedico());
-        response.setPacienteId(saved.getPaciente().getId());
-        return response;
+        // 4. Volver a DTO y devolver
+        return mapper.toDTO(saved);
     }
+
 
     //
-    public CitaMedica UpdateOneCitation(Long id, CitaMedica citaMedica) {
-        CitaMedica citaMedicaFinded = citaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("cita medica no se encontro!" + id));
-        citaMedicaFinded.setHoraIngreso(citaMedica.getHoraIngreso());
-        citaMedicaFinded.setHoraSalida(citaMedica.getHoraSalida());
-        citaMedicaFinded.setMedico(citaMedica.getMedico());
-        citaMedicaFinded.setTipoCita(citaMedica.getTipoCita());
-        citaMedicaFinded.setCentroMedico(citaMedica.getCentroMedico());
-        citaMedicaFinded.setPaciente(citaMedica.getPaciente());
-
-        return this.citaRepository.save(citaMedicaFinded);
-    }
+//    public CitaMedica UpdateOneCitation(Long id, CitaMedica citaMedica) {
+//        CitaMedica citaMedicaFinded = citaRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("cita medica no se encontro!" + id));
+//        citaMedicaFinded.setHoraIngreso(citaMedica.getHoraIngreso());
+//        citaMedicaFinded.setHoraSalida(citaMedica.getHoraSalida());
+//        citaMedicaFinded.setMedico(citaMedica.getMedico());
+//        citaMedicaFinded.setTipoCita(citaMedica.getTipoCita());
+//        citaMedicaFinded.setCentroMedico(citaMedica.getCentroMedico());
+//        citaMedicaFinded.setPaciente(citaMedica.getPaciente());
+//
+//        return this.citaRepository.save(citaMedicaFinded);
+//    }
 
     //// Eliminar CITA
     // Eliminar una cita por id

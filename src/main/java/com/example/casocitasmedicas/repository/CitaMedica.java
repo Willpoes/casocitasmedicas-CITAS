@@ -15,8 +15,7 @@ public class CitaMedica {
     private String tipoCita;
     private String centroMedico;
 
-    @ManyToOne
-    private Paciente paciente;
+    private Long pacienteId; // en lugar de ManyToOne
 
     public Long getId() {
         return id;
@@ -66,11 +65,11 @@ public class CitaMedica {
         this.centroMedico = centroMedico;
     }
 
-    public Paciente getPaciente() {
-        return paciente;
+    public Long getPacienteId() {
+        return pacienteId;
     }
 
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
+    public void setPacienteId(Long pacienteId) {
+        this.pacienteId = pacienteId;
     }
 }
