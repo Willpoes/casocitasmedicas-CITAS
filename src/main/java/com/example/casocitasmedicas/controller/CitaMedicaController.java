@@ -52,15 +52,23 @@ public class CitaMedicaController {
     //// PARA CREAR CITA
     // Crea uno
     // Crear una nueva cita
-//
-//    //// ACTUALIZAR UNA CITA
-//    // Actualiza uno
-//    @PutMapping("/citationupdate/{id}")
-//    public CitaMedica UpdateCitation(@PathVariable Long id,
-//                          @RequestBody CitaMedica citaMedica){
-//        return this.citaService.UpdateOneCitation(id,citaMedica);
-//    }
-//
+
+    @PostMapping("/crear")
+    public ResponseEntity<CitaMedicaDTO> crearCita(@RequestBody CitaMedicaDTO dto) {
+        CitaMedicaDTO nuevaCita = citaService.guardarDesdeDTO(dto);
+        System.out.println("PacienteId recibido: " + dto.getPacienteId());
+        return ResponseEntity.ok(nuevaCita);
+    }
+
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<CitaMedicaDTO> actualizarCita(
+            @PathVariable Long id,
+            @RequestBody CitaMedicaDTO dto) {
+
+        CitaMedicaDTO updated = citaService.actualizarCita(id, dto);
+        return ResponseEntity.ok(updated);
+    }
+
     //// ELIMINAR UNA CITA
     // Elimina unop
     @DeleteMapping("/citationdelete/{id}")

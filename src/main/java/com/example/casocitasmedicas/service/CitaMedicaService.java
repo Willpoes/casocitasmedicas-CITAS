@@ -73,19 +73,31 @@ public class CitaMedicaService {
     }
 
 
-    //
-//    public CitaMedica UpdateOneCitation(Long id, CitaMedica citaMedica) {
-//        CitaMedica citaMedicaFinded = citaRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("cita medica no se encontro!" + id));
-//        citaMedicaFinded.setHoraIngreso(citaMedica.getHoraIngreso());
-//        citaMedicaFinded.setHoraSalida(citaMedica.getHoraSalida());
-//        citaMedicaFinded.setMedico(citaMedica.getMedico());
-//        citaMedicaFinded.setTipoCita(citaMedica.getTipoCita());
-//        citaMedicaFinded.setCentroMedico(citaMedica.getCentroMedico());
-//        citaMedicaFinded.setPaciente(citaMedica.getPaciente());
-//
-//        return this.citaRepository.save(citaMedicaFinded);
-//    }
+    public CitaMedicaDTO actualizarCita(Long id, CitaMedicaDTO dto) {
+        // 1. Buscar cita
+        CitaMedica citaExistente = citaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cita médica no encontrada con id: " + id));
+
+        // 2. Validar que el paciente exista en el microservicio Pacientes
+        PacienteDTO paciente = pacienteClient.obtenerPaciente(dto.getPacienteId());
+        if (paciente == null) {
+            throw new RuntimeException("Paciente no encontrado en microservicio Pacientes");
+        }
+
+        // 3. Actualizar los campos
+        citaExistente.setHoraIngreso(dto.getHoraIngreso());
+        citaExistente.setHoraSalida(dto.getHoraSalida());
+        citaExistente.setMedico(dto.getMedico());
+        citaExistente.setTipoCita(dto.getTipoCita());
+        citaExistente.setCentroMedico(dto.getCentroMedico());
+        citaExistente.setPacienteId(dto.getPacienteId());
+
+        // 4. Guardar cambios
+        CitaMedica updated = citaRepository.save(citaExistente);
+
+        // 5. Devolver DTO
+        return mapper.toDTO(updated);
+    }
 
     //// Eliminar CITA
     // Eliminar una cita por id

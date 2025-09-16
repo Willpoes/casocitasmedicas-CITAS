@@ -12,9 +12,9 @@ public interface CitaMedicaMapper {
     //CitaMedicaMapper INSTANCIA = Mappers.getMapper(CitaMedicaMapper.class);
 
 
-    //@Mapping(source = "pacienteId", target = "paciente.id")
+    @Mapping(source = "pacienteId", target = "pacienteId")
     CitaMedica toEntity(CitaMedicaDTO dto);
 
-    //@Mapping(source = "paciente.id", target = "pacienteId")
+    @Mapping(source = "pacienteId", target = "pacienteId")
     CitaMedicaDTO toDTO(CitaMedica entity);
 }
