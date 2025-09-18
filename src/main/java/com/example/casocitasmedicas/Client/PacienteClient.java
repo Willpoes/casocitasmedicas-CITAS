@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "MicroPacientesV1")
+@FeignClient(name = "MicroPacientesV1", fallback = PacienteClientFallback.class)
 public interface PacienteClient {
 
 

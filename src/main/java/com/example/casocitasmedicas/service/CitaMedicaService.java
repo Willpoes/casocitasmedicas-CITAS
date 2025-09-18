@@ -55,21 +55,19 @@ public class CitaMedicaService {
     }
 
 
-    // Crear una cita desde el DTO
     public CitaMedicaDTO guardarDesdeDTO(CitaMedicaDTO dto) {
-        // 1. Verificar si el paciente existe en el microservicio Pacientes
+        //  Consultar paciente
         PacienteDTO paciente = pacienteClient.obtenerPaciente(dto.getPacienteId());
-        if (paciente == null) {
-            throw new RuntimeException("Paciente no encontrado en microservicio Pacientes");
+
+        //  Verificar si vino del fallback
+        if ("DESCONOCIDO".equals(paciente.getNombre())) {
+            throw new RuntimeException("No se puede crear la cita: paciente " + dto.getPacienteId());
         }
 
-        // 2. Convertir el DTO a entidad
+        // Guardar cita
         CitaMedica cita = mapper.toEntity(dto);
-
-        // 3. Guardar la cita en la BD local (microservicio citas)
         CitaMedica saved = citaRepository.save(cita);
 
-        // 4. Volver a DTO y devolver
         return mapper.toDTO(saved);
     }
 
@@ -79,10 +77,11 @@ public class CitaMedicaService {
         CitaMedica citaExistente = citaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cita médica no encontrada con id: " + id));
 
-        // 2. Validar que el paciente exista en el microservicio Pacientes
+        //  Validar que el paciente exista en el microservicio Pacientes
         PacienteDTO paciente = pacienteClient.obtenerPaciente(dto.getPacienteId());
-        if (paciente == null) {
-            throw new RuntimeException("Paciente no encontrado en microservicio Pacientes");
+        // Verificar si vino del fallback
+        if ("DESCONOCIDO".equals(paciente.getNombre())) {
+            throw new RuntimeException("No se puede crear la cita: paciente " + dto.getPacienteId());
         }
 
         // 3. Actualizar los campos
@@ -100,7 +99,6 @@ public class CitaMedicaService {
         return mapper.toDTO(updated);
     }
 
-    //// Eliminar CITA
     // Eliminar una cita por id
     public void deleteOneCitation(Long id) {
         CitaMedica citaMedica = citaRepository.findById(id)
