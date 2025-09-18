@@ -35,6 +35,7 @@ public class CitaMedicaService {
     public List<CitaMedica> listarTodas() {
         return citaRepository.findAll();
     }
+
     public PacienteDTO obtenerPacienteDesdePacientes(Long id) {
         return pacienteClient.obtenerPaciente(id);
     }

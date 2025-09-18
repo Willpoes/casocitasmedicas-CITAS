@@ -7,7 +7,7 @@ public class PacienteDTO {
     private int edad;
     private String tipoSangre;
 
-    public PacienteDTO(){
+    public PacienteDTO() {
     }
 
     public PacienteDTO(Long id, String nombre, int edad, String tipoSangre) {
@@ -18,17 +18,36 @@ public class PacienteDTO {
     }
 
 
+    public Long getId() {
+        return id;
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public int getEdad() { return edad; }
-    public void setEdad(int edad) { this.edad = edad; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getTipoSangre() { return tipoSangre; }
-    public void setTipoSangre(String tipoSangre) { this.tipoSangre = tipoSangre; }
+    public int getEdad() {
+        return edad;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
+    }
+
+    public String getTipoSangre() {
+        return tipoSangre;
+    }
+
+    public void setTipoSangre(String tipoSangre) {
+        this.tipoSangre = tipoSangre;
+    }
 
 }
