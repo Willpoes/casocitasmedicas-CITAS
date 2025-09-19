@@ -43,14 +43,13 @@ public class CitaMedicaController {
     }
 
     ////BUSCAR CITAS POR TIPO DE CITA
-    // Lista varias
+
     @GetMapping("/citationtype/{tipoCita}")
     public List<CitaMedica> buscarPorTipo(@PathVariable String tipoCita) {
         return citaService.buscarPorTipo(tipoCita);
     }
 
-    //// PARA CREAR CITA
-    // Crea uno
+
     // Crear una nueva cita
 
     @PostMapping("/crear")
@@ -69,8 +68,7 @@ public class CitaMedicaController {
         return ResponseEntity.ok(updated);
     }
 
-    //// ELIMINAR UNA CITA
-    // Elimina unop
+
     @DeleteMapping("/citationdelete/{id}")
     public ResponseEntity<Void> deleteCitation(@PathVariable Long id) {
 
@@ -78,13 +76,7 @@ public class CitaMedicaController {
         return ResponseEntity.noContent().build();
     }
 
-    ////DTO SAVE CON MAPPER http://localhost:8080/citas/dto/citation
-    //{
-    //  "tipoCita": "General",
-    //  "horaIngreso": "2025-09-12T09:00:00",
-    //  "pacienteId": 1
-    //}
-    // pacienteId: null -> error 11/09 error solo con paciente id
+
 
 
     @PostMapping("/dto/citation")
