@@ -11,7 +11,6 @@ import org.mapstruct.factory.Mappers;
 public interface CitaMedicaMapper {
     //CitaMedicaMapper INSTANCIA = Mappers.getMapper(CitaMedicaMapper.class);
 
-
     @Mapping(source = "pacienteId", target = "pacienteId")
     CitaMedica toEntity(CitaMedicaDTO dto);
 

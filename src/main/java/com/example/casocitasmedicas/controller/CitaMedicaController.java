@@ -5,6 +5,7 @@ import com.example.casocitasmedicas.dto.PacienteDTO;
 import com.example.casocitasmedicas.exception.BadRequestException;
 import com.example.casocitasmedicas.repository.CitaMedica;
 import com.example.casocitasmedicas.service.CitaMedicaService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,16 +43,13 @@ public class CitaMedicaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    ////BUSCAR CITAS POR TIPO DE CITA
-
+    ///BUSCAR CITAS POR TIPO DE CITA
     @GetMapping("/citationtype/{tipoCita}")
     public List<CitaMedica> buscarPorTipo(@PathVariable String tipoCita) {
         return citaService.buscarPorTipo(tipoCita);
     }
 
-
-    // Crear una nueva cita
-
+    /// Crear una nueva cita
     @PostMapping("/crear")
     public ResponseEntity<CitaMedicaDTO> crearCita(@RequestBody CitaMedicaDTO dto) {
         CitaMedicaDTO nuevaCita = citaService.guardarDesdeDTO(dto);
@@ -63,31 +61,24 @@ public class CitaMedicaController {
     public ResponseEntity<CitaMedicaDTO> actualizarCita(
             @PathVariable Long id,
             @RequestBody CitaMedicaDTO dto) {
-
         CitaMedicaDTO updated = citaService.actualizarCita(id, dto);
         return ResponseEntity.ok(updated);
     }
 
-
     @DeleteMapping("/citationdelete/{id}")
-    public ResponseEntity<Void> deleteCitation(@PathVariable Long id) {
-
+    public ResponseEntity<String> deleteCitation(@PathVariable Long id) {
         citaService.deleteOneCitation(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("cita eliminada correctamente con [" + id+ "]");
     }
 
-
-
-
     @PostMapping("/dto/citation")
-    public ResponseEntity<CitaMedicaDTO> crearConDTO(@RequestBody CitaMedicaDTO dto) {
+    public ResponseEntity<CitaMedicaDTO> crearConDTO(@Valid @RequestBody CitaMedicaDTO dto) {
         if (dto.getTipoCita() == null || dto.getTipoCita().isEmpty()) {
             throw new BadRequestException("El tipo no puede estar vacío");
         }
         if (dto.getHoraIngreso() == null) {
             throw new BadRequestException("Debe existir hora de ingreso");
         }
-
         CitaMedicaDTO saved = citaService.guardarDesdeDTO(dto);
         return ResponseEntity.ok(saved);
     }

@@ -16,7 +16,6 @@ import java.util.Optional;
 @Service
 public class CitaMedicaService {
     private static final Logger log = LoggerFactory.getLogger(CitaMedicaService.class);
-
     private final CitaMedicaRepository citaRepository;
     private final PacienteClient pacienteClient;
 
@@ -30,25 +29,32 @@ public class CitaMedicaService {
         this.mapper = mapper;
     }
 
-
-    // Listar citas
+    /// LISTAR CITAS
+    /// TODAS
     public List<CitaMedica> listarTodas() {
         return citaRepository.findAll();
     }
 
+    /// OBTENER PACIENTE
+    /// Solo un paciente por id
     public PacienteDTO obtenerPacienteDesdePacientes(Long id) {
         return pacienteClient.obtenerPaciente(id);
     }
 
-    // buscar CITA por Iid
+    /// BUSCAR CITA
+    /// Solo una cita por id
     public Optional<CitaMedica> buscarCitaPorId(Long id) {
         return citaRepository.findById(id);
     }
 
+    /// LISTAR CITAS POR TIPOS
+    /// Por tipos
     public List<CitaMedica> buscarPorTipo(String tipoCita) {
         return citaRepository.findByTipoCitaContainingIgnoreCase(tipoCita);
     }
 
+    ///GUARDAR NUEVA CITA
+    ///
     public CitaMedica saveCitation(CitaMedica citaMedica) {
         log.info("aqui estamos agregando por service");
         return citaRepository.save(citaMedica);
@@ -56,10 +62,8 @@ public class CitaMedicaService {
 
 
     public CitaMedicaDTO guardarDesdeDTO(CitaMedicaDTO dto) {
-        //  Consultar paciente
         PacienteDTO paciente = pacienteClient.obtenerPaciente(dto.getPacienteId());
 
-        //  Verificar si vino del fallback
         if ("DESCONOCIDO".equals(paciente.getNombre())) {
             throw new RuntimeException("No se puede crear la cita: paciente " + dto.getPacienteId());
         }
@@ -71,20 +75,17 @@ public class CitaMedicaService {
         return mapper.toDTO(saved);
     }
 
-
     public CitaMedicaDTO actualizarCita(Long id, CitaMedicaDTO dto) {
-        // 1. Buscar cita
+
         CitaMedica citaExistente = citaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cita médica no encontrada con id: " + id));
 
-        //  Validar que el paciente exista en el microservicio Pacientes
         PacienteDTO paciente = pacienteClient.obtenerPaciente(dto.getPacienteId());
-        // Verificar si vino del fallback
+
         if ("DESCONOCIDO".equals(paciente.getNombre())) {
             throw new RuntimeException("No se puede crear la cita: paciente " + dto.getPacienteId());
         }
 
-        // 3. Actualizar los campos
         citaExistente.setHoraIngreso(dto.getHoraIngreso());
         citaExistente.setHoraSalida(dto.getHoraSalida());
         citaExistente.setMedico(dto.getMedico());
@@ -92,14 +93,13 @@ public class CitaMedicaService {
         citaExistente.setCentroMedico(dto.getCentroMedico());
         citaExistente.setPacienteId(dto.getPacienteId());
 
-        // 4. Guardar cambios
         CitaMedica updated = citaRepository.save(citaExistente);
 
-        // 5. Devolver DTO
         return mapper.toDTO(updated);
     }
 
-    // Eliminar una cita por id
+    /// ELIMINAR CITA
+    ///  Eliminar una cita por id
     public void deleteOneCitation(Long id) {
         CitaMedica citaMedica = citaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cita meedica no encontrada con id " + id));

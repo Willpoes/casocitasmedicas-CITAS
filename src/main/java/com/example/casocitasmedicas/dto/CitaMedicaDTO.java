@@ -1,14 +1,26 @@
 package com.example.casocitasmedicas.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDateTime;
 
 public class CitaMedicaDTO {
     private LocalDateTime horaIngreso;
     private LocalDateTime horaSalida;
     private String medico;
+
+    @NotBlank(message = "El tipo de cita no puede estar vacío")
+    @Pattern(regexp = "^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$",
+            message = "El tipo de cita debe contener solo letras")
     private String tipoCita;
+    //private String tipoCita;
+
     private String centroMedico;
     private Long pacienteId;
+
+    ///
+    private PacienteDTO paciente;
 
     public CitaMedicaDTO() {
     }
@@ -61,4 +73,12 @@ public class CitaMedicaDTO {
         this.pacienteId = pacienteId;
     }
 
+    ///
+    public PacienteDTO getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(PacienteDTO paciente) {
+        this.paciente = paciente;
+    }
 }
